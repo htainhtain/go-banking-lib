@@ -5,7 +5,11 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-func NewLogger() (*zap.Logger, error) {
+var logger *zap.Logger
+
+func init() {
+
+	var err error
 
 	encoderConfig := zap.NewProductionEncoderConfig()
 	encoderConfig.TimeKey = "timestamp"
@@ -13,7 +17,22 @@ func NewLogger() (*zap.Logger, error) {
 	encoderConfig.StacktraceKey = ""
 	config := zap.NewProductionConfig()
 	config.EncoderConfig = encoderConfig
-	return config.Build(zap.AddCallerSkip(1))
+	logger, err = config.Build(zap.AddCallerSkip(1))
 
-	// defer logger.Sync() // flushes buffer, if any
+	defer logger.Sync() // flushes buffer, if any
+	if err != nil {
+		panic(err)
+	}
+}
+
+func Info(message string, fields ...zapcore.Field) {
+	logger.Info(message, fields...)
+}
+
+func Debug(message string, fields ...zapcore.Field) {
+	logger.Debug(message, fields...)
+}
+
+func Error(message string, fields ...zapcore.Field) {
+	logger.Error(message, fields...)
 }
