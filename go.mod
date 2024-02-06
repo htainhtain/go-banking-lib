@@ -1,4 +1,4 @@
-module banking-lib
+module github.com/htainhtain/go-banking-lib
 
 go 1.21.6
 
